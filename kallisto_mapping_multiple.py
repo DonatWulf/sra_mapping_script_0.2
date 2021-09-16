@@ -10,13 +10,24 @@ import subprocess
 import os
 import time
 
+file=open("ProgPath.conifg")
+pathconfig=file.readlines()
+file.close()
+prog_paths={}
+for i in pathconfig:
+  program=i.split("\t")[0]
+  path=i.split("\t")[1]
+  prog_paths[program]=path
+
+
+
 # Downloads and unpacks SRA files form NCBI
 def unpack_sra_file_new(Run_ID,type_,remove=True):
   if type_=="PAIRED":
-    call="/usr/bin/fasterq-dump -e 7 --split-files {SRAFile}".format(SRAFile=Run_ID).split(" ")
+    call=prog_paths["fasterq-dump"]+" -e 7 --split-files {SRAFile}".format(SRAFile=Run_ID).split(" ")
     out_file=Run_ID+"_1.fastq"+ " " +Run_ID+"_2.fastq"
   else:
-    call="/usr/bin/fasterq-dump -e 7 {SRAFile}".format(SRAFile=Run_ID).split(" ")
+    call=prog_paths["fasterq-dump"]+" -e 7 {SRAFile}".format(SRAFile=Run_ID).split(" ")
     out_file=Run_ID+".fastq"
   subprocess.call(call)#, stderr=os.DEVNULL, stdout=os.DEVNULL
   return out_file
@@ -32,9 +43,9 @@ def kallisto_mapping(index,files,type_,output,remove=True):
           os.remove(j)
       return "file_not_found"
   if type_=="SINGLE":
-    call="/usr/bin/kallisto quant -t 7 -i {index} -o {output}_out -t 1 --single -l 200 -s 20 {fastqFile1}".format(index=index,output=output,fastqFile1=files).split(" ")
+    call=prog_paths["kallisto"]+" quant -t 7 -i {index} -o {output}_out -t 1 --single -l 200 -s 20 {fastqFile1}".format(index=index,output=output,fastqFile1=files).split(" ")
   else:
-    call="/usr/bin/kallisto quant -t 7 -i {index} -o {output}_out {fastqFile1}".format(index=index,output=output,fastqFile1=files).split(" ")
+    call=prog_paths["kallisto"]+" quant -t 7 -i {index} -o {output}_out {fastqFile1}".format(index=index,output=output,fastqFile1=files).split(" ")
   subprocess.call(call, stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
   for i in files.split(" "):
     os.remove(i)
