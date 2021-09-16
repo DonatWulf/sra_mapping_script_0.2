@@ -39,11 +39,11 @@ i=df_grouped[[1]]
 
 i<-df_grouped_new[[2]]
 mcoptions <- list(preschedule=FALSE, set.seed=FALSE)
-#warum nur 4?
+#set number of cores
 ncores <- 4
 registerDoParallel(ncores)
 outputs<-foreach(i=df_grouped_new, .options.multicore = mcoptions,.inorder=F)%dopar%{
-  #was ist das für ein index?
+  #path to Kallisto index
   index="solyc4.0.idx"
   
   
