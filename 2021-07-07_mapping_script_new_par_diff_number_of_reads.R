@@ -2,47 +2,56 @@ library(tidyverse)
 #library(tidyverse, lib.loc = "/mnt/data/R/library/")
 library(doParallel)
 library(reticulate)
-#setwd("/mnt/nwdata/2021_sollyc_nw/Network_mapping/")
+
 source_python("kallisto_mapping_multiple.py")
+
+##### read config file ######
+config_<-read_delim("ProgPath.config",delim=": ",col_names=F)%>%
+  mutate(X2=str_remove_all(X2," *"))
+fasterq_dump_path<-config_%>%
+  filter(X1=="fasterq-dump")%>%
+  pull(X2)
+kallisto_path<-config_%>%
+  filter(X1=="kallisto")%>%
+  pull(X2)
+
+##### read SRA RunInfo file #####
 df<-read_tsv("2021-07-07_Slyc_selected_sra-experiments_download.tsv",guess_max = 22000)
+#needed columnnames RunInfo file
+# Experiment, Run, LibraryLayout
 colnames(df)
-#df<-df%>%dplyr::rename("Experiment"="ExperimentAccession")
-##bartus<-read_tsv("already_done_bartus.tsv_new")
-##denbi<-read_tsv("already_done_denbi_big.tsv_new")
-#failed_mappings<-read_tsv("barley_difference_in_number_of_reads.tsv")
-##all<-bartus%>%
-##  bind_rows(denbi)%>%
-##  pull(value)%>%
-##  str_remove("_.*")
-#df<-df%>%filter(Experiment %in% failed_mappings$Experiment.Accession)
-##df<-df%>%
-##  filter(is.na(mapped) | duplicated(Experiment.Accession) & Selection!="0")%>%
-##  filter(!Experiment.Accession %in% all)
 
 
-already_done<-c("adf")
+##### filter already mapped experiments #####
+already_mapped<-c("adf")
+#get mapped experiments from foldernames
+already_mapped<-list.dirs(recursive = F)%>%
+  enframe(value="foldernames")%>%
+  mutate(foldernames=str_remove(foldernames,"./"))%>%
+  mutate(foldernames=str_remove(foldernames,"_out"))%>%
+  pull(foldernames)%>%
+  c(already_mapped)
 
+# filter
 df<-df%>%
-  filter(!Experiment %in%already_done)
-
-
+  filter(!Experiment %in%already_mapped)
+#split the df by experiments for the for loop
 df_grouped<-df%>%
   group_by(Experiment)%>%
   group_split()
-
-df_grouped_new<-df_grouped
-
-
+#test case
 i=df_grouped[[1]]
 
-
-
-i<-df_grouped_new[[2]]
+##### establish multicore backend #####
 mcoptions <- list(preschedule=FALSE, set.seed=FALSE)
-#set number of cores
-ncores <- 4
-registerDoParallel(ncores)
-outputs<-foreach(i=df_grouped_new, .options.multicore = mcoptions,.inorder=F)%dopar%{
+#set number of simultainies downloads
+paralel_downloads<-2
+#set ncores for kallisto and fasterq-dump
+ncores <- as.integer(detectCores()/paralel_downloads)
+registerDoParallel(paralel_downloads)
+
+##### download and map everthing ######
+outputs<-foreach(i=df_grouped, .options.multicore = mcoptions,.inorder=F)%dopar%{
   #path to Kallisto index
   index="solyc4.0.idx"
   
@@ -61,7 +70,7 @@ outputs<-foreach(i=df_grouped_new, .options.multicore = mcoptions,.inorder=F)%do
   
   if(!output %in% already_done){
     #calls python script download and map multiple
-    download_and_map_multiple(index,Run_ID,type,output)
+    download_and_map_multiple(index,Run_ID,type,output,fasterq_dump_path,kallisto_path,ncores)
   } else {
     "skip"
   }
