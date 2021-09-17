@@ -7,12 +7,14 @@ edit ProgPath.config to set your own paths
 fasterq-dump: /usr/bin/fasterq-dump
 kallisto: /usr/bin/kallisto
 
-
+# Test your installation and configuration
 Test data is provided
 just run the SRA_Multimapper.R Script
 
 it should map 4 different experiments in single and paired end mode
 
+
+# How to start the download and the mapping
 create your own index for your species with kallisto index
 insert your SRA runinfo file containing at least the colums
 "Experiment" "Run" "LibraryLayout"
@@ -29,5 +31,4 @@ kallisto_index<-"examples/Solyc_example_index"
 you can set the number of paralel_downloads. Do not exceed the number of cores you have available.
 The more downloads are processed in parallel the more storage is required
 paralel_downloads<-4
-
 
