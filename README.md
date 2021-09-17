@@ -2,7 +2,7 @@
 
 Script to map multiple SRA files with kallisto.
 
-edit ProgPath.config to set your own paths
+Edit ProgPath.config to set your own paths:
 
 fasterq-dump: /usr/bin/fasterq-dump
 
@@ -12,12 +12,12 @@ kallisto: /usr/bin/kallisto
 Test data is provided.
 Just run the SRA_Multimapper.R Script
 
-it should map 4 different experiments in single and paired end mode
+It should map 4 different experiments in single and paired end mode.
 
 
 # How to start the download and the mapping
-Create your own index for your species with kallisto index
-Insert your SRA runinfo file containing at least the colums
+Create your own index for your species with kallisto index.
+Insert your SRA runinfo file containing at least the colums:
 "Experiment" "Run" "LibraryLayout"
 
 Currently the SRA_RunInfo file is tab (\t) seperated.
