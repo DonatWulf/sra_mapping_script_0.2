@@ -9,8 +9,8 @@ fasterq-dump: /usr/bin/fasterq-dump
 kallisto: /usr/bin/kallisto
 
 # Test your installation and configuration
-Test data is provided
-just run the SRA_Multimapper.R Script
+Test data is provided.
+Just run the SRA_Multimapper.R Script
 
 it should map 4 different experiments in single and paired end mode
 
