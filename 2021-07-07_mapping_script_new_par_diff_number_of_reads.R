@@ -20,8 +20,8 @@ kallisto_path<-config_%>%
 #needed columnnames RunInfo file
 # Experiment, Run, LibraryLayout
 # to generate an index use kallisto index
-SRA_RunInfo<-"SRA_minimal_example.txt"
-kallisto_index<-"Solyc_example_index"
+SRA_RunInfo<-"examples/SRA_minimal_example.txt"
+kallisto_index<-"examples/Solyc_example_index"
 
 
 ##### read SRA RunInfo file #####
