@@ -15,10 +15,18 @@ kallisto_path<-config_%>%
   filter(X1=="kallisto")%>%
   pull(X2)
 
-##### read SRA RunInfo file #####
-df<-read_tsv("2021-07-07_Slyc_selected_sra-experiments_download.tsv",guess_max = 22000)
+
+##### index and SRA RunInfo file #####
 #needed columnnames RunInfo file
 # Experiment, Run, LibraryLayout
+# to generate an index use kallisto index
+SRA_RunInfo<-"examples/SRA_minimal_example.txt"
+kallisto_index<-"examples/Solyc_example_index"
+
+
+##### read SRA RunInfo file #####
+df<-read_tsv(SRA_RunInfo ,guess_max = 22000)
+
 colnames(df)
 
 
@@ -45,7 +53,7 @@ i=df_grouped[[1]]
 ##### establish multicore backend #####
 mcoptions <- list(preschedule=FALSE, set.seed=FALSE)
 #set number of simultainies downloads
-paralel_downloads<-2
+paralel_downloads<-4
 #set ncores for kallisto and fasterq-dump
 ncores <- as.integer(detectCores()/paralel_downloads)
 registerDoParallel(paralel_downloads)
@@ -53,8 +61,7 @@ registerDoParallel(paralel_downloads)
 ##### download and map everthing ######
 outputs<-foreach(i=df_grouped, .options.multicore = mcoptions,.inorder=F)%dopar%{
   #path to Kallisto index
-  index="solyc4.0.idx"
-  
+  index=kallisto_index
   
   Run_ID<-i %>%
     pull(Run)
@@ -65,8 +72,6 @@ outputs<-foreach(i=df_grouped, .options.multicore = mcoptions,.inorder=F)%dopar%
   output<-i%>%
     pull(Experiment)%>%
     .[1]
-  
-  
   
   if(!output %in% already_done){
     #calls python script download and map multiple
