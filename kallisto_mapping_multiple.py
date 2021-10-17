@@ -26,7 +26,7 @@ def kallisto_mapping(index,files,type_,output,kallisto="kallisto",ncores=8,remov
           os.remove(j)
       return "file_not_found"
   if type_=="SINGLE":
-    call=kallisto+" quant -t "+str(ncores)+" -i {index} -o {output}_out -t 1 --single -l 200 -s 20 {fastqFile1}"
+    call=kallisto+" quant -t "+str(ncores)+" -i {index} -o {output}_out --single -l 200 -s 20 {fastqFile1}"
     call=call.format(index=index,output=output,fastqFile1=files).split(" ")
   else:
     call=kallisto+" quant -t "+str(ncores)+" -i {index} -o {output}_out {fastqFile1}"
