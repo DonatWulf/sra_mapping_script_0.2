@@ -33,12 +33,12 @@ colnames(df)
 ##### filter already mapped experiments #####
 already_mapped<-c("adf")
 #get mapped experiments from foldernames
-already_mapped<-list.dirs(recursive = F)%>%
-  enframe(value="foldernames")%>%
-  mutate(foldernames=str_remove(foldernames,"./"))%>%
-  mutate(foldernames=str_remove(foldernames,"_out"))%>%
-  pull(foldernames)%>%
+already_mapped<-list.files(pattern="abundance.tsv",recursive = T)%>%
+  enframe(value="filenames")%>%
+  mutate(filenames=str_remove(filenames,"_out.*"))%>%
+  pull(filenames)%>%
   c(already_mapped)
+
 
 # filter
 df<-df%>%
