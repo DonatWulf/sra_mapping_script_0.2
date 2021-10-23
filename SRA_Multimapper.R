@@ -55,7 +55,7 @@ mcoptions <- list(preschedule=FALSE, set.seed=FALSE)
 #set number of simultainies downloads
 paralel_downloads<-4
 #set ncores for kallisto and fasterq-dump
-ncores <- as.integer(detectCores()/paralel_downloads)
+ncores <- min(as.integer(detectCores()/paralel_downloads*2),as.integer(detectCores()))
 registerDoParallel(paralel_downloads)
 
 ##### download and map everthing ######
