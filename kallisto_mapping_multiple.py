@@ -20,9 +20,9 @@ def unpack_sra_file(Run_ID,fasterqdump="fasterq-dump",ncores=8,remove=True):
   output=sorted(glob.glob(Run_ID+"*.fastq"))
   #check if the file is single or paired end
   if len(output) ==1:
-    seq_type="Single"
+    seq_type="SINGLE"
   else:
-    seq_type="Paired"
+    seq_type="PAIRED"
   #add files and Paired or Single into a list
   output_file=[" ".join(output),seq_type]
   
