@@ -1,22 +1,33 @@
 import subprocess
 import os
 import time
+import glob
+
+#link_p=["SRR1785728","SRR1797830"]
+
+#sorted(glob.glob("SRR12147614*fastq"))
 
 # Downloads and unpacks SRA files form NCBI
-def unpack_sra_file_new(Run_ID,type_,fasterqdump="fasterq-dump",ncores=8,remove=True):
-  if type_=="PAIRED":
-    call=fasterqdump+" -e "+str(ncores)+" --split-files {SRAFile}"
-    call=call.format(SRAFile=Run_ID).split(" ")
-    out_file=Run_ID+"_1.fastq"+ " " +Run_ID+"_2.fastq"
+def unpack_sra_file(Run_ID,fasterqdump="fasterq-dump",ncores=8,remove=True):
+  #run fasterq-dump
+  call=fasterqdump+" -e "+str(ncores)+" --split-files {SRAFile}"
+  call=call.format(SRAFile=Run_ID).split(" ")
+  try:
+    subprocess.run(call)#, stderr=os.DEVNULL, stdout=os.DEVNULL
+  except:
+    print("Error_while_downloading "+Run_ID+" ".join(call))
+  #get output files and return them
+  output=sorted(glob.glob(Run_ID+"*.fastq"))
+  #check if the file is single or paired end
+  if len(output) ==1:
+    seq_type="Single"
   else:
-    call=fasterqdump+" -e "+str(ncores)+" {SRAFile}"
-    call=call.format(SRAFile=Run_ID).split(" ")
-    out_file=Run_ID+".fastq"
-  subprocess.call(call)#, stderr=os.DEVNULL, stdout=os.DEVNULL
-  return out_file
+    seq_type="Paired"
+  #add files and Paired or Single into a list
+  output_file=[" ".join(output),seq_type]
+  
+  return output_file
 
-
-# Maps multiple files with Kallisto in SINGLE or PAIRED end mode
 def kallisto_mapping(index,files,type_,output,kallisto="kallisto",ncores=8,remove=True):
   print(files)
   for i in files.split(" "):
@@ -26,25 +37,33 @@ def kallisto_mapping(index,files,type_,output,kallisto="kallisto",ncores=8,remov
           os.remove(j)
       return "file_not_found"
   if type_=="SINGLE":
-    call=kallisto+" quant -t "+str(ncores)+" -i {index} -o {output}_out --single -l 200 -s 20 {fastqFile1}"
-    call=call.format(index=index,output=output,fastqFile1=files).split(" ")
+    call=kallisto+" quant -t "+str(ncores)+" -i {index} -o {output}_out --single -l 200 -s 20 {fastqFiles}"
   else:
-    call=kallisto+" quant -t "+str(ncores)+" -i {index} -o {output}_out {fastqFile1}"
-    call=call.format(index=index,output=output,fastqFile1=files).split(" ")
-  subprocess.call(call, stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+    call=kallisto+" quant -t "+str(ncores)+" -i {index} -o {output}_out {fastqFiles}"
+  call=call.format(index=index,output=output,fastqFiles=files).split(" ")
+  try:
+    subprocess.run(call)
+  except:
+    print("Error while mapping "+output+" ".join(call))
   for i in files.split(" "):
     os.remove(i)
   return "done"
 
 
 # downloads and maps multiple Runs from SRA
-def download_and_map_multiple(index,link_p,type_p,output,fasterqdump="fasterq-dump",kallisto="kallisto",ncores=8,remove=True):
+def download_and_map_multiple(index,link_p,output,fasterqdump="fasterq-dump",kallisto="kallisto",ncores=8,remove=True):
   all_fastq=""
+  all_types=[]
   if type(link_p)==type("a"):
     link_p=[link_p]
   for i in link_p:
-    all_fastq+=unpack_sra_file_new(i,type_p,fasterqdump,ncores,remove)
+    new_files=unpack_sra_file(i,fasterqdump,ncores,remove)
+    all_types.append(new_files[1]) # add all types to a list
+    all_fastq+=new_files[0] # add all unpacked files to a string separated by " "
     all_fastq+=" "
+  if len(set(all_types))!=1:  #test if all paired or single runs are the same.
+    return "mixed of single-end and paired-end Runs!"
+  type_p=all_types[0]
   all_fastq=all_fastq.rstrip(" ")
   print(all_fastq)
   kallisto_mapping(index,all_fastq,type_p,output,kallisto,ncores,remove)
@@ -53,14 +72,4 @@ def download_and_map_multiple(index,link_p,type_p,output,fasterqdump="fasterq-du
       os.remove(i)
   return "done"
 
-#download_and_map_multiple(index,["https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos2/sra-pub-run-13/ERR2204417/ERR2204417.1","https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos2/sra-pub-run-13/ERR2204418/ERR2204418.1"],"SINGLE","test_mapping",remove=True)
 
-
-#link="https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-1/SRR3418027/SRR3418027.1"
-#type="SINGLE"
-#Run_ID="DRR016685"
-#link_p="DRR016685"
-#link_p="https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-2/ERR476705/ERR476705.1"
-#type_p="PAIRED"
-#index="solyc4.0.idx"
-#fasterqdump="/usr/bin/fasterq-dump"
