@@ -66,16 +66,13 @@ outputs<-foreach(i=df_grouped, .options.multicore = mcoptions,.inorder=F)%dopar%
   Run_ID<-i %>%
     pull(Run)
   
-  type=i%>%
-    pull(LibraryLayout)%>%
-    .[1]
   output<-i%>%
     pull(Experiment)%>%
     .[1]
   
   if(!output %in% already_mapped){
     #calls python script download and map multiple
-    download_and_map_multiple(index,Run_ID,type,output,fasterq_dump_path,kallisto_path,ncores)
+    download_and_map_multiple(index,Run_ID,output,fasterq_dump_path,kallisto_path,ncores)
   } else {
     "skip"
   }
