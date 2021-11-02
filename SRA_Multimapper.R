@@ -23,15 +23,10 @@ SRA_RunInfo<-"examples/SRA_minimal_example.txt"
 # generate an index with kallisto index
 kallisto_index<-"examples/Solyc_example_index"
 
-##### The SraRunFile now is comma separated, change to F for legacy files #####
-new_runfile_format <- T
 
 ##### read SRA RunInfo file #####
-if (new_runfile_format) {
-  df<-read_csv(SRA_RunInfo, guess_max = 22000)
-} else {
-  df<-read_tsv(SRA_RunInfo, guess_max = 22000)
-}
+df<-read_csv(SRA_RunInfo, guess_max = 22000)
+
 
 colnames(df)
 
