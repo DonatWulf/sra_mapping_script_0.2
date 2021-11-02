@@ -20,9 +20,6 @@ Create your own index for your species with kallisto index.
 Insert your SRA runinfo file containing at least the colums:
 "Experiment" "Run" "LibraryLayout"
 
-Currently the SRA_RunInfo file is tab (\t) seperated.
-This might change in the future to comma (,) separated.
-
 Edit the path to your SRA_Runinfo file and your index file.
 Experiment, Run, LibraryLayout
 SRA_RunInfo<-"examples/SRA_minimal_example.txt"
