@@ -28,7 +28,15 @@ def unpack_sra_file(Run_ID,fasterqdump="fasterq-dump",ncores=8,remove=True):
   
   return output_file
 
-def kallisto_mapping(index,files,type_,output,kallisto="kallisto",ncores=8,remove=True):
+def kallisto_mapping(index,files,type_,output,stranded="",kallisto="kallisto",ncores=8,remove=True):
+  if stranded != "fr" & stranded != "rf":
+    stranded=""
+  if stranded == "fr":
+    stranded="--fr-stranded "
+  if stranded == "rf":
+    stranded="--rf-stranded "
+  
+
   print(files)
   for i in files.split(" "):
     if not os.path.isfile(i):
@@ -37,9 +45,9 @@ def kallisto_mapping(index,files,type_,output,kallisto="kallisto",ncores=8,remov
           os.remove(j)
       return "file_not_found"
   if type_=="SINGLE":
-    call=kallisto+" quant -t "+str(ncores)+" -i {index} -o {output}_out --single -l 200 -s 20 {fastqFiles}"
+    call=kallisto+" quant -t "+str(ncores)+" -i {index} -o {output}_out "+stranded+"--single -l 200 -s 20 {fastqFiles}"
   else:
-    call=kallisto+" quant -t "+str(ncores)+" -i {index} -o {output}_out {fastqFiles}"
+    call=kallisto+" quant -t "+str(ncores)+" -i {index} -o {output}_out "+stranded+"{fastqFiles}"
   call=call.format(index=index,output=output,fastqFiles=files).split(" ")
   try:
     subprocess.run(call)
@@ -51,7 +59,7 @@ def kallisto_mapping(index,files,type_,output,kallisto="kallisto",ncores=8,remov
 
 
 # downloads and maps multiple Runs from SRA
-def download_and_map_multiple(index,link_p,output,fasterqdump="fasterq-dump",kallisto="kallisto",ncores=8,remove=True):
+def download_and_map_multiple(index,link_p,output,stranded,fasterqdump="fasterq-dump",kallisto="kallisto",ncores=8,remove=True):
   all_fastq=""
   all_types=[]
   if type(link_p)==type("a"):
@@ -66,7 +74,7 @@ def download_and_map_multiple(index,link_p,output,fasterqdump="fasterq-dump",kal
   type_p=all_types[0]
   all_fastq=all_fastq.rstrip(" ")
   print(all_fastq)
-  kallisto_mapping(index,all_fastq,type_p,output,kallisto,ncores,remove)
+  kallisto_mapping(index,all_fastq,type_p,output,stranded,kallisto,ncores,remove)
   for i in all_fastq.split(" "):
     if os.path.exists(i):
       os.remove(i)

@@ -32,7 +32,7 @@ colnames(df)
 
 
 ##### filter already mapped experiments #####
-already_mapped<-c("adf")
+already_mapped<-c("")
 #get mapped experiments from foldernames
 already_mapped<-list.files(pattern="abundance.tsv",recursive = T)%>%
   enframe(value="filenames")%>%
@@ -71,9 +71,12 @@ outputs<-foreach(i=df_grouped, .options.multicore = mcoptions,.inorder=F)%dopar%
     pull(Experiment)%>%
     .[1]
   
+  output<-i%>%
+    pull(Stranded)%>%
+    .[1]
   if(!output %in% already_mapped){
     #calls python script download and map multiple
-    download_and_map_multiple(index,Run_ID,output,fasterq_dump_path,kallisto_path,ncores)
+    download_and_map_multiple(index,Run_ID,output,stranded,fasterq_dump_path,kallisto_path,ncores)
   } else {
     "skip"
   }
