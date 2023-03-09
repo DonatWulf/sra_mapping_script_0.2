@@ -1,4 +1,4 @@
-# Mapping_skript_2.0
+# Mapping_skript_0.2
 
 Script to map multiple SRA files with kallisto.
 
