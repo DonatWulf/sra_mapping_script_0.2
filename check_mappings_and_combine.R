@@ -76,7 +76,6 @@ experiments%>%
   geom_density()
 
 
-#df<-readRDS("counts_Zmays_B73_denbi_dw.RDS")
 
 experiments%>%
   ggplot(aes(n_processed))+
@@ -119,6 +118,6 @@ dim(expression_matrix)
 expression_matrix%>%
   column_to_rownames("target_id")%>%
   as.matrix()%>%
-  saveRDS("Sb_expression_matrix_7_5Mio_70p_21_10_19.Rds")
+  saveRDS("expression_matrix.Rds")
 
 
