@@ -21,7 +21,7 @@ Insert your SRA runinfo file containing at least the colums:
 "Experiment" "Run" "LibraryLayout"
 
 Edit the path to your SRA_Runinfo file and your index file.
-Experiment, Run, LibraryLayout
+Experiment, Run, LibraryLayout, Stranded
 SRA_RunInfo<-"examples/SRA_minimal_example.txt"
 generate an index with kallisto index
 kallisto_index<-"examples/Solyc_example_index"
