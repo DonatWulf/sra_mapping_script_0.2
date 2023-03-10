@@ -2,6 +2,12 @@
 
 Script to map multiple SRA files with kallisto.
 
+the script uses fasterq-dump and kallisto.
+
+you need to install them.
+
+follow this how to
+
 Edit ProgPath.config to set your own paths:
 
 fasterq-dump: /usr/bin/fasterq-dump
