@@ -19,7 +19,7 @@ args<-parse_args(p)
 
 
 
-source("mapping_script_function.R")
+source("map_all.R")
 if(!args$combine){
   
   if(is.na(args$transcriptome)){
