@@ -33,7 +33,7 @@ if(!args$combine){
   stopifnot(!(is.na(args$SRA_info)|is.na(args$transcriptome)))
   
 
-  mapp_all(runinfo_file = args$SRA_info,
+  map_all(runinfo_file = args$SRA_info,
            transcriptome_fasta = args$transcriptome,
            retries = args$retries,
            check_spots= args$check_reads,
