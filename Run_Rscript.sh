@@ -1,2 +1,2 @@
 #Run the Rscript
-Rscript --vanilla SRA_Multimapper.R > re_mapping_1.out 2> re_mapping_1.err &
+Rscript --vanilla multiSRAmapper.R -s 'examples/SRA_minimal_example.txt' -t 'examples/Solyc_example_transcriptom.fasta'
