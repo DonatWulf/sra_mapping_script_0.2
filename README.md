@@ -8,6 +8,16 @@ fasterq-dump: /usr/bin/fasterq-dump
 
 kallisto: /usr/bin/kallisto
 
+you need to install the following r packages
+
+argparser
+
+jsonlite
+
+doParallel
+
+tidyverse
+
 # Test your installation and configuration
 Test data is provided.
 Just run the SRA_Multimapper.R Script
