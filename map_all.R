@@ -31,7 +31,7 @@ map_all<-function(runinfo_file,transcriptome_fasta,retries=3,check_spots=F,paral
   
   if(length(missing_columns)!=0){
     for(missing_col in missing_columns){
-      warning(str_c("Column ",missing_col,"is missing from the RunInfo file!"))
+      warning(str_c("Column ",missing_col," is missing from the RunInfo file!"))
       
     }
     stopifnot(length(missing_columns)==0)
