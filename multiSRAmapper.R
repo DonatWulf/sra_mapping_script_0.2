@@ -5,7 +5,7 @@ p <- arg_parser("automatic mapping script for SRA RNA-seq exerpiments with kalli
 p<-add_argument(p, arg="-transcriptome",help="transcriptome fasta file to generate the kallisto index and map the reads",nargs=1,short = "-t")
 p<-add_argument(p, arg="-retries",help="number of retries for failed downloads",default=3,short= "-r",nargs=1)
 p<-add_argument(p, arg="--check_reads",help="if set the number of processed reads is compared to the provided number of spots",flag = T,short="--c",nargs=1)
-p<-add_argument(p, arg="-paralel_downloads",help="how many downloads are run in parallel. This increases the storage requirement. At some point you get deminishing returns",default=2,short="-p",nargs=1)
+p<-add_argument(p, arg="-paralel_downloads",help="how many downloads are run in parallel. This increases the storage requirement. At some point you get diminishing returns",default=2,short="-p",nargs=1)
 p<-add_argument(p, arg="-paralel_kallisto",help="how many threads kallisto should use for mapping. If 0 the number of available threads will be used.",short="-k",default=0,type="integer",nargs=1)
 p<-add_argument(p, arg="-SRA_info",help="SRA info file containing the RunID, ExperimentID, LibraryLayout, Stranded, the number of spots comma seperated. If you want to map each run individually you need to assign an individual ExperimenID or use the RunID as the ExperimentID",short="-s",nargs=1)
 p<-add_argument(p, arg="-standard_diviation",help="standard diviation used for mapping",short="-sd",default=20,type="integer",nargs=1)
